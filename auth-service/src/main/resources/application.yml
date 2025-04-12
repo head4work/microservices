@@ -1,0 +1,38 @@
+#spring:
+#  cloud:
+#    config:
+#      import-check:
+#        enabled: false
+spring:
+  application:
+    name: auth-service
+  config:
+    import: configserver:http://localhost:8888
+
+  jpa:
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate:
+        format_sql: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    url: jdbc:postgresql://localhost:5432/auth-service
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.hibernate: DEBUG
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_ACCESS_SECRET:"0c090024fd0b368683bfb390b54434dec4c2e79d12370df1cea14e6f050bc64f"}
+      expiration: 604800000
+      access-token:
+        expiration: 900000
+
+
+

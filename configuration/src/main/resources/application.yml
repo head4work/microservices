@@ -1,0 +1,17 @@
+server:
+  port: 8888  # Port where the Config Server runs
+
+spring:
+  application:
+    name: configuration
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/head4work/accountant-config.git  # Centralized config repo
+#          search-paths: common  # Points to the "common" folder inside the repo
+          clone-on-start: true
+          # username: your-git-username  # If private repo
+          # password: your-git-password-or-token # If private repo
+          # default-label: main # Branch to use

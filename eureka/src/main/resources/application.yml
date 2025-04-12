@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: eureka-server
+  config:
+    import: configserver:http://localhost:8888
+#server:
+#  port: 8761 # Default port for Eureka Server
+#
+#eureka:
+#  client:
+#    register-with-eureka: false  # The registry itself doesn't need to register
+#    fetch-registry: false         # The registry doesn't fetch other services

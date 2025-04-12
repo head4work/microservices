@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: pet-service
+  config:
+    import: configserver:http://localhost:8888
+
+
+
+
