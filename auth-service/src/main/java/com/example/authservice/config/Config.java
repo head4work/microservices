@@ -1,5 +1,4 @@
 package com.example.authservice.config;
-import com.example.authservice.entities.User;
 import com.example.authservice.repositories.JpaUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -12,7 +11,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -21,11 +19,7 @@ public class Config implements WebMvcConfigurer {
     private final JpaUserRepository repository;
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> {
-            User user = repository.getByEmail(username);
-            //TODO do we need this ? looks like authorized user is copy user that already implements userDetails
-            return new AuthorizedUser(user);
-        };
+        return repository::getByEmail;
     }
 
     @Bean
