@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class AuthorizedUser implements UserDetails {
+    // AuthorizedUser wrap user to provide ID for user in spring context
     private String id;
     private String email;
     private String password;
