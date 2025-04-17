@@ -46,7 +46,11 @@ public class JwtService {
     }
 
     public String generateAccessToken(User userDetails) {
-        return buildToken(new HashMap<>(), userDetails, accessTokenExpiration);
+        Map<String,Object> extraClaims = Map.of(
+                "userId", userDetails.getId(),
+                "roles", userDetails.getRoles()
+        );
+        return buildToken(extraClaims, userDetails, accessTokenExpiration);
     }
 
     private String buildToken(
@@ -58,8 +62,6 @@ public class JwtService {
         return Jwts
                 .builder()
                 .claims(extraClaims)
-                .claim("userId", userDetails.getId()) // Include userId
-                .claim("roles", userDetails.getRoles()) // Include roles
                 .subject(userDetails.getEmail())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))

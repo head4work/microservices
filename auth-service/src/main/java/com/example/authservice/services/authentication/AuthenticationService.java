@@ -49,7 +49,7 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 //TODO NORMAL ROLES ASSIGN
-                .roles(Set.of(Role.ROLE_USER, Role.ROLE_ADMIN))
+                .roles(Set.of(Role.ROLE_USER))
                 .build();
        User savedUser = jpaUserRepository.createUser(user);
 
