@@ -1,17 +1,22 @@
 package com.example.gateway.security;
 
+import com.example.gateway.exceptions.CustomJwtException;
 import com.example.gateway.services.JwtService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.ws.rs.core.HttpHeaders;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Component
@@ -36,14 +41,15 @@ public class JwtFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return unauthorized(exchange);
+            return unauthorized(exchange, "Unauthorized");
         }
 
         String token = authHeader.substring(7);
 
         try {
             Claims claims = jwtUtil.validateToken(token);
-            String userId = claims.getSubject();
+            String email = claims.getSubject();
+            String userId = claims.get("userId", String.class);
             List<String> roles = claims.get("roles", List.class);
 
             // Mutate request with new headers
@@ -52,16 +58,30 @@ public class JwtFilter implements GlobalFilter, Ordered {
                     .header("X-User-Roles", String.join(",", roles))
                     .build();
 
-            return chain.filter(exchange.mutate().request(mutatedRequest).build());
+            ServerWebExchange mutatedExchange = exchange.mutate().request(mutatedRequest).build();
+            return chain.filter(mutatedExchange)
+                    .onErrorResume(e -> handleError(exchange, e)); // Reactive error handling
 
+        } catch (CustomJwtException e) {
+            return unauthorized(exchange, e.getMessage());
         } catch (Exception e) {
-            return unauthorized(exchange);
+            return unauthorized(exchange, "Unauthorized: " + e.getMessage());
         }
     }
 
-    private Mono<Void> unauthorized(ServerWebExchange exchange) {
+    private Mono<Void> handleError(ServerWebExchange exchange, Throwable ex) {
+        if (ex instanceof ExpiredJwtException) {
+            return unauthorized(exchange, "Token expired");
+        }
+        return unauthorized(exchange, "Unauthorized");
+    }
+
+    private Mono<Void> unauthorized(ServerWebExchange exchange, String message) {
         exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-        return exchange.getResponse().setComplete();
+        exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
+        DataBuffer buffer = exchange.getResponse().bufferFactory()
+                .wrap(("{\"error\": \"" + message + "\"}").getBytes(StandardCharsets.UTF_8));
+        return exchange.getResponse().writeWith(Mono.just(buffer));
     }
 
     @Override
