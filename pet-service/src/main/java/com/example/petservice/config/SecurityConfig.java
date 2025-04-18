@@ -27,8 +27,8 @@ public class SecurityConfig {
                 .addFilterBefore(customHeaderAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 // 4. Define authorization rules (can also be done with @PreAuthorize)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/service/**").hasRole("ADMIN") // Requires ROLE_ADMIN authority
-                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN") // Requires ROLE_USER or ROLE_ADMIN
+                        .requestMatchers("/admin/service/**").hasRole("ADMIN") // Requires ROLE_ADMIN authority
+                        .requestMatchers("/service/**").hasAnyRole("USER", "ADMIN") // Requires ROLE_USER or ROLE_ADMIN
                         .requestMatchers("/public/**", "/actuator/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // Example public endpoints
                         .anyRequest().authenticated() // All other requests need some authentication info present
                 );

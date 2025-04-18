@@ -1,4 +1,5 @@
 package com.example.authservice.config;
+import com.example.authservice.entities.User;
 import com.example.authservice.repositories.JpaUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -19,7 +20,11 @@ public class Config implements WebMvcConfigurer {
     private final JpaUserRepository repository;
     @Bean
     public UserDetailsService userDetailsService() {
-        return repository::getByEmail;
+        return email -> {
+            User user =  repository.getByEmail(email);
+            // AuthorizedUser wrap user to provide ID for user in spring context
+            return new AuthorizedUser(user);
+        };
     }
 
     @Bean

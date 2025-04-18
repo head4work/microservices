@@ -19,7 +19,6 @@ public class CustomHeaderAuthenticationFilter extends OncePerRequestFilter {
     // Use constants or @Value annotations for header names
     private static final String USER_ID_HEADER = "X-User-ID";
     private static final String USER_ROLES_HEADER = "X-User-Roles";
-    private static final String ROLE_PREFIX = "ROLE_"; // Standard Spring Security prefix
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -38,7 +37,7 @@ public class CustomHeaderAuthenticationFilter extends OncePerRequestFilter {
                 authorities = Stream.of(rolesHeader.split(","))
                         .map(String::trim)
                         .filter(role -> !role.isEmpty())
-                        .map(role -> new SimpleGrantedAuthority(ROLE_PREFIX + role.toUpperCase())) // Add ROLE_ prefix
+                        .map(role -> new SimpleGrantedAuthority(role.toUpperCase())) // Add ROLE_ prefix
                         .collect(Collectors.toList());
             }
 

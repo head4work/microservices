@@ -1,11 +1,12 @@
 package com.example.authservice.services.authentication;
 
+import com.example.authservice.config.AuthorizedUser;
+import com.example.authservice.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -33,40 +34,44 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(User userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
 
     public String generateToken(
             Map<String, Object> extraClaims,
-            UserDetails userDetails
+            User userDetails
     ) {
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 
-    public String generateAccessToken(UserDetails userDetails) {
-        return buildToken(new HashMap<>(), userDetails, accessTokenExpiration);
+    public String generateAccessToken(User userDetails) {
+        Map<String,Object> extraClaims = Map.of(
+                "userId", userDetails.getId(),
+                "roles", userDetails.getRoles()
+        );
+        return buildToken(extraClaims, userDetails, accessTokenExpiration);
     }
 
     private String buildToken(
             Map<String, Object> extraClaims,
-            UserDetails userDetails,
+            User userDetails,
             long expiration
     ) {
         //TODO Add user id and roles into access token
         return Jwts
                 .builder()
                 .claims(extraClaims)
-                .subject(userDetails.getUsername())
+                .subject(userDetails.getEmail())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSignInKey(),  Jwts.SIG.HS256)
+                .signWith(getSignInKey(), Jwts.SIG.HS256)
                 .compact();
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, User userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        return (username.equals(userDetails.getEmail())) && !isTokenExpired(token);
     }
 
     public boolean isTokenExpired(String token) {
