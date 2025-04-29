@@ -1,6 +1,7 @@
 package com.head4work.employeeservice.entities;
 
 
+import com.head4work.employeeservice.enums.RateType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,9 +29,12 @@ public class Employee {
     private String address;
     private String phone;
 
-    //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
-//    @JsonBackReference // Annotation to handle JSON serialization
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rate_type")
+    private RateType rateType;
+
+    private Double rate;
+
     private String userId;
 
 //    @Builder.Default

@@ -3,6 +3,7 @@ package com.head4work.employeeservice.services;
 import com.head4work.employeeservice.dto.EmployeeDto;
 import com.head4work.employeeservice.entities.Employee;
 import com.head4work.employeeservice.exceptions.EmployeeNotFoundException;
+import com.head4work.employeeservice.repositories.EmployeeRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

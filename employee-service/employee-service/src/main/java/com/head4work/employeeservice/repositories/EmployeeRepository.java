@@ -1,4 +1,4 @@
-package com.head4work.employeeservice.services;
+package com.head4work.employeeservice.repositories;
 
 import com.head4work.employeeservice.entities.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
