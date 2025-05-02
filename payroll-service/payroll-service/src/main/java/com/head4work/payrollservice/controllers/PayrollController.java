@@ -6,21 +6,15 @@ import com.head4work.payrollservice.entities.EmployeeClient;
 import com.head4work.payrollservice.entities.Payroll;
 import com.head4work.payrollservice.entities.Schedule;
 import com.head4work.payrollservice.enums.PaymentPeriod;
-import com.head4work.payrollservice.exceptions.EmployeeNotFoundException;
 import com.head4work.payrollservice.services.ScheduleService;
 import com.head4work.payrollservice.util.StrategyFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 
 @RestController
 @RequestMapping("/service/v1/payroll")
@@ -29,6 +23,11 @@ public class PayrollController {
     private final EmployeeClient employeeClient;
     private final StrategyFactory strategyFactory;
     private final ScheduleService scheduleService;
+
+    @PostMapping("/schedule")
+    public ResponseEntity<Schedule> createSchedule(@RequestBody Schedule schedule) {
+        return ResponseEntity.ok(scheduleService.saveSchedule(schedule));
+    }
 
     @GetMapping("/schedule/{id}")
     public ResponseEntity<List<Payroll>> calculatePayrollsForSchedule(@PathVariable String id) {
@@ -40,24 +39,18 @@ public class PayrollController {
         }
         List<PayrollDates> payrollDates = getPayrollDatesForRestOfTheYear(schedule.getType(), schedule.getStartDate());
 
-        for (PayrollDates payrollDate : payrollDates) {
-
-            employees.forEach(employee -> {
-                Payroll payroll = new Payroll();
-
-                if (payrollDates != null) {
-                    Payroll.builder()
-                            .employeeId(employee.getId())
-                            .startPeriod(payrollDates.getStartDate())
-                            .endPeriod(payrollDates.getEndDate())
-                            .payDate(payrollDates.getPayrollDate())
-                            .employeeRate(employee.getSalaryAmount())
-                            .paymentAmount(calculatePayAmount())
-                            .build();
-                }
-            });
-        }
-
+        payrollDates.forEach(payrollDate -> {
+            for (EmployeeResponse employee : employees) {
+                payrolls.add(Payroll.builder()
+                        .employeeId(employee.getId())
+                        .startPeriod(payrollDate.getStartDate())
+                        .endPeriod(payrollDate.getEndDate())
+                        .payDate(payrollDate.getPayrollDate())
+                        .employeeRate(employee.getRate())
+                        .paymentAmount(calculatePayAmountForPaymentDates(employee, payrollDate))
+                        .build());
+            }
+        });
         return ResponseEntity.ok(payrolls);
     }
 
@@ -65,8 +58,8 @@ public class PayrollController {
         return strategyFactory.getPayPeriodStrategy(type).schedulePayments(startDate);
     }
 
-    private Double calculatePayAmount() {
-        return 0.0;
+    private Double calculatePayAmountForPaymentDates(EmployeeResponse employee, PayrollDates payrollDate) {
+        return strategyFactory.getSalaryCalculationStrategy(employee.getRateType()).calculateWage(employee, payrollDate);
     }
 
 }

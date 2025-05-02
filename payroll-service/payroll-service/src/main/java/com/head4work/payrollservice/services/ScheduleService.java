@@ -5,8 +5,6 @@ import com.head4work.payrollservice.repositories.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.function.Supplier;
-
 @RequiredArgsConstructor
 @Service
 public class ScheduleService {
@@ -16,5 +14,8 @@ public class ScheduleService {
         return scheduleRepository.findById(id).orElseThrow(() -> new RuntimeException("Schedule not found"));
     }
 
+    public Schedule saveSchedule(Schedule schedule) {
+        return scheduleRepository.save(schedule);
+    }
 
 }

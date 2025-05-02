@@ -10,5 +10,5 @@ public class EmployeeResponse {
     private String firstName;
     private String lastName;
     private RateType rateType;
-    private double salaryAmount;
+    private double rate;
 }

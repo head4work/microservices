@@ -1,6 +1,7 @@
 package com.head4work.payrollservice.config;
 
 
+import feign.RequestInterceptor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,8 +31,9 @@ public class SecurityConfig {
                 // 4. Define authorization rules (can also be done with @PreAuthorize)
                 .authorizeHttpRequests(authz -> authz
                         // .requestMatchers("/**").permitAll()
-                        .requestMatchers("/admin/service/**").hasRole("ADMIN") // Requires ROLE_ADMIN authority
-                        .requestMatchers("/service/**").hasAnyRole("USER", "ADMIN") // Requires ROLE_USER or ROLE_ADMIN
+                        // .requestMatchers("/admin/service/**").hasRole("ADMIN") // Requires ROLE_ADMIN authority
+                        .requestMatchers("/service/**").permitAll()
+                        //.requestMatchers("/service/**").hasAnyRole("USER", "ADMIN") // Requires ROLE_USER or ROLE_ADMIN
                         .requestMatchers("/public/**", "/actuator/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // Example public endpoints
                         .anyRequest().authenticated() // All other requests need some authentication info present
                 );
@@ -49,5 +51,10 @@ public class SecurityConfig {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         return modelMapper;
+    }
+
+    @Bean
+    public RequestInterceptor contextPropagatingInterceptor() {
+        return new FeignHeaderInterceptor();
     }
 }
