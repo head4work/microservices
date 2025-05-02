@@ -1,6 +1,7 @@
 package com.head4work.employeeservice.controllers;
 
 import com.head4work.employeeservice.dto.EmployeeDto;
+import com.head4work.employeeservice.dto.EmployeeResponse;
 import com.head4work.employeeservice.entities.Employee;
 import com.head4work.employeeservice.exceptions.CustomResponseException;
 import com.head4work.employeeservice.services.EmployeeService;
@@ -76,6 +77,12 @@ public class EmployeeController {
         logger.info("Retrieving all users");
         List<Employee> employees = employeeService.getAllByUserId(userId);
         return ResponseEntity.ok(employees);
+    }
+
+    @PostMapping("/list")
+    public ResponseEntity<List<EmployeeResponse>> getEmployeesByIds(@RequestBody List<String> ids) throws CustomResponseException {
+        String userId = getAuthenticatedUserId();
+        return ResponseEntity.ok(employeeService.findEmployeesByIds(ids,userId));
     }
 
 

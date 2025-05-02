@@ -1,6 +1,6 @@
-package com.head4work.payrollservice.dtos;
+package com.head4work.employeeservice.dto;
 
-import com.head4work.payrollservice.enums.RateType;
+import com.head4work.employeeservice.enums.RateType;
 import lombok.Data;
 
 @Data

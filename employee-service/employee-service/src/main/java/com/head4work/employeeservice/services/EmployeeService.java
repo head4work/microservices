@@ -1,6 +1,7 @@
 package com.head4work.employeeservice.services;
 
 import com.head4work.employeeservice.dto.EmployeeDto;
+import com.head4work.employeeservice.dto.EmployeeResponse;
 import com.head4work.employeeservice.entities.Employee;
 import com.head4work.employeeservice.exceptions.EmployeeNotFoundException;
 import com.head4work.employeeservice.repositories.EmployeeRepository;
@@ -8,7 +9,11 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.beans.PersistenceDelegate;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -36,5 +41,13 @@ public class EmployeeService {
 
     public List<Employee> getAllByUserId(String userId) {
         return employeeRepository.findEmployeesByUserId(userId);
+    }
+
+    public List<EmployeeResponse> findEmployeesByIds(List<String> ids, String userId) {
+        List<Employee> employees = employeeRepository.findEmployeesByUserId(userId);
+        return employees.stream()
+                .filter(employee -> ids.contains(employee.getId()))
+                .map(employee -> modelMapper.map(employee, EmployeeResponse.class))
+                .toList();
     }
 }
