@@ -33,7 +33,4 @@ public class Payroll extends AbstractBaseEntity {
     @Column(name = "payment_amount")
     Double paymentAmount;
 
-    @Column(name = "payment_rate")
-    Double paymentRate;
-
 }

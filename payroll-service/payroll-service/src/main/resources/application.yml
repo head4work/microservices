@@ -5,3 +5,16 @@ spring:
   config:
     import: configserver:http://localhost:8888
 
+resilience4j:
+  circuitbreaker:
+    instances:
+      employeeService:
+        register-health-indicator: true
+        sliding-window-size: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+  retry:
+    instances:
+      employeeService:
+        max-attempts: 3
+        wait-duration: 500ms

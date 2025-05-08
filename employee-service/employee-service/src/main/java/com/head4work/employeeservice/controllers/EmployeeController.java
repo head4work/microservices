@@ -82,7 +82,11 @@ public class EmployeeController {
     @PostMapping("/list")
     public ResponseEntity<List<EmployeeResponse>> getEmployeesByIds(@RequestBody List<String> ids) throws CustomResponseException {
         String userId = getAuthenticatedUserId();
-        return ResponseEntity.ok(employeeService.findEmployeesByIds(ids,userId));
+        List<EmployeeResponse> employees = employeeService.findEmployeesByIds(ids, userId);
+        if (employees.isEmpty()) {
+            throw new CustomResponseException("No employees assigned to the schedule", HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(employees);
     }
 
 
