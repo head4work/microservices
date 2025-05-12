@@ -41,7 +41,7 @@ public class CustomHeaderAuthenticationFilter extends OncePerRequestFilter {
                         .map(role -> new SimpleGrantedAuthority(role.toUpperCase())) // Add ROLE_ prefix
                         .collect(Collectors.toList());
             }
-
+// update
             // Create Authentication object
             // Principal = userId, Credentials = null (already authenticated by gateway), Authorities = roles
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
