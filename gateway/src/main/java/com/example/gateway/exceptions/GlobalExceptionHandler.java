@@ -2,6 +2,7 @@ package com.example.gateway.exceptions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.gateway.support.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,6 +45,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), ex);
+    }
+
+    //Handle service not found
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleServiceNotFoundException(NotFoundException ex) {
+        return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), ex);
     }
 
     // Handle all uncaught exceptions

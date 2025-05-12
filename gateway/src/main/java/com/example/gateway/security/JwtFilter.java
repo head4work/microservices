@@ -70,10 +70,12 @@ public class JwtFilter implements GlobalFilter, Ordered {
     }
 
     private Mono<Void> handleError(ServerWebExchange exchange, Throwable ex) {
-        if (ex instanceof ExpiredJwtException) {
-            return unauthorized(exchange, "Token expired");
+        if (ex instanceof ExpiredJwtException || ex instanceof CustomJwtException) {
+            return unauthorized(exchange, ex.getMessage());
         }
-        return unauthorized(exchange, "Unauthorized");
+
+        // Let non-auth errors propagate
+        return Mono.error(ex);
     }
 
     private Mono<Void> unauthorized(ServerWebExchange exchange, String message) {
