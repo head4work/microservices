@@ -4,6 +4,7 @@ import com.head4work.employeeservice.dto.EmployeeDto;
 import com.head4work.employeeservice.dto.EmployeeResponse;
 import com.head4work.employeeservice.entities.Employee;
 import com.head4work.employeeservice.exceptions.CustomResponseException;
+import com.head4work.employeeservice.exceptions.EmptyScheduleException;
 import com.head4work.employeeservice.services.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -84,7 +85,7 @@ public class EmployeeController {
         String userId = getAuthenticatedUserId();
         List<EmployeeResponse> employees = employeeService.findEmployeesByIds(ids, userId);
         if (employees.isEmpty()) {
-            throw new CustomResponseException("No employees assigned to the schedule", HttpStatus.BAD_REQUEST);
+            throw new EmptyScheduleException();
         }
         return ResponseEntity.ok(employees);
     }

@@ -33,6 +33,11 @@ public class GlobalExceptionHandler {
         return buildResponse(ex.getHttpStatus(), ex.getMessage(), ex);
     }
 
+    // Handle EmptyScheduleException
+    @ExceptionHandler(EmptyScheduleException.class)
+    public ResponseEntity<ErrorResponse> handleEmptyScheduleException(EmptyScheduleException ex) {
+        return buildResponse(ex.getHttpStatus(), ex.getMessage(), ex);
+    }
 
     //Handle user not found
 //    @ExceptionHandler(UserNotFoundException.class)

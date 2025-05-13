@@ -2,6 +2,8 @@ package com.head4work.payrollservice.services;
 
 import com.head4work.payrollservice.dtos.EmployeeResponse;
 import com.head4work.payrollservice.entities.EmployeeClient;
+import com.head4work.payrollservice.exceptions.EmptyScheduleException;
+import feign.FeignException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,13 @@ public class EmployeeService {
     // Fallback method must match the original method's signature + Throwable
     public List<EmployeeResponse> getEmployeesByIdsFallback(List<String> ids, Throwable t) {
         // Return mock data on failure
-        return List.of();
+        if (((FeignException.BadRequest) t).contentUTF8().contains("No employees assigned")) {
+            throw new EmptyScheduleException();
+        }
+        return List.of(EmployeeResponse.builder()
+                .id("mock")
+                .firstName("mock")
+                .lastName("mock")
+                .build());
     }
 }

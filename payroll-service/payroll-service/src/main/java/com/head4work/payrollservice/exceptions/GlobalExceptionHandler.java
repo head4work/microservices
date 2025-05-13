@@ -47,6 +47,11 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred.", ex);
     }
 
+    // Handle EmptyScheduleException
+    @ExceptionHandler(EmptyScheduleException.class)
+    public ResponseEntity<ErrorResponse> handleEmptyScheduleException(EmptyScheduleException ex) {
+        return buildResponse(ex.getHttpStatus(), ex.getMessage(), ex);
+    }
     // Helper method to create a structured response
     private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, String message, Exception ex) {
         logger.error(message, ex); // Log the error with stack trace

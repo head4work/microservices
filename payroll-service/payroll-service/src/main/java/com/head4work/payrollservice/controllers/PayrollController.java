@@ -38,7 +38,7 @@ public class PayrollController {
         List<Payroll> payrolls = new ArrayList<>();
         List<EmployeeResponse> employees = employeeService.getEmployeesByIds(schedule.getEmployeeIds());
         if (employees.isEmpty()) {
-            throw new CustomResponseException("Can't retrieve data from employee service", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomResponseException("No employees assigned to schedule", HttpStatus.BAD_REQUEST);
         }
         List<PayrollDates> payrollDates = getPayrollDatesForRestOfTheYear(schedule.getType(), schedule.getStartDate());
 
