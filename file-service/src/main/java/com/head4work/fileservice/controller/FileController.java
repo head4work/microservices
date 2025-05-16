@@ -1,17 +1,17 @@
-package com.example.petservice.controller;
+package com.head4work.fileservice.controller;
 
-import com.example.petservice.error.CustomResponseException;
+import com.head4work.fileservice.error.CustomResponseException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.example.petservice.util.AuthenticatedUser.getAuthenticatedUserId;
+import static com.head4work.fileservice.util.AuthenticatedUser.getAuthenticatedUserId;
 
 @RestController
-@RequestMapping("/service/v1/pets/")
-public class PetController {
+@RequestMapping("/service/v1/files/")
+public class FileController {
 
     @GetMapping("{id}")
     public ResponseEntity<String> getPet(@PathVariable String id) throws CustomResponseException {

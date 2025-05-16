@@ -1,4 +1,4 @@
-package com.example.petservice;
+package com.head4work.fileservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,10 +8,10 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
-public class PetServiceApplication {
+public class FileServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PetServiceApplication.class, args);
+        SpringApplication.run(FileServiceApplication.class, args);
     }
 
 }

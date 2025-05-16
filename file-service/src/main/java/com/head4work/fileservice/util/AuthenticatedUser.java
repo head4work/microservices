@@ -1,6 +1,6 @@
-package com.example.petservice.util;
+package com.head4work.fileservice.util;
 
-import com.example.petservice.error.CustomResponseException;
+import com.head4work.fileservice.error.CustomResponseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

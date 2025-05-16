@@ -8,11 +8,11 @@
         <version>3.4.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.example</groupId>
-    <artifactId>pet-service</artifactId>
+    <groupId>com.head4work</groupId>
+    <artifactId>file-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>pet-service</name>
-    <description>pet-service</description>
+    <name>file-service</name>
+    <description>file-service</description>
     <url/>
     <licenses>
         <license/>
@@ -67,10 +67,6 @@
         <dependency>
             <groupId>io.zipkin.reporter2</groupId>
             <artifactId>zipkin-reporter-brave</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
     </dependencies>

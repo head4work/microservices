@@ -1,4 +1,4 @@
-package com.example.petservice.error;
+package com.head4work.fileservice.error;
 
 import org.springframework.http.HttpStatus;
 

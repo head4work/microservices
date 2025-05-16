@@ -1,4 +1,4 @@
-package com.example.petservice.config;
+package com.head4work.fileservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
