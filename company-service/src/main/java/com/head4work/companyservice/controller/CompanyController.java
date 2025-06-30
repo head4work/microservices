@@ -12,7 +12,7 @@ import static com.head4work.companyservice.util.AuthenticatedUser.getAuthenticat
 
 @RestController
 @RequestMapping("/service/v1/company/")
-public class FileController {
+public class CompanyController {
 
     @GetMapping("{id}")
     public ResponseEntity<String> getPet(@PathVariable String id) throws CustomResponseException {
