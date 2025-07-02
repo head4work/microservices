@@ -1,9 +1,8 @@
 package com.head4work.companyservice.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.*;
-
-import java.util.List;
 
 @Entity
 @Builder
@@ -13,14 +12,11 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Table(name = "companies")
-public class Company {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+public class Company extends AbstractBaseEntity {
+
     String name;
     String description;
     String address;
     String phone;
-
 
 }
