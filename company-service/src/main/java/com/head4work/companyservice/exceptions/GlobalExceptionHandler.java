@@ -36,11 +36,11 @@ public class GlobalExceptionHandler {
     }
 
 
-    //Handle user not found
-//    @ExceptionHandler(UserNotFoundException.class)
-//    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
-//        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), ex);
-//    }
+    // Handle company not found
+    @ExceptionHandler(CompanyNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCompanyNotFoundException(CompanyNotFoundException ex) {
+        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), ex);
+    }
 
     // Handle all uncaught exceptions
     @ExceptionHandler(Exception.class)

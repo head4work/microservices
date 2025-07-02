@@ -1,6 +1,7 @@
 package com.head4work.companyservice.config;
 
 import feign.RequestInterceptor;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -42,6 +43,12 @@ public class SecurityConfig {
         return new CustomHeaderAuthenticationFilter();
     }
 
+    @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        return modelMapper;
+    }
 
     @Bean
     public RequestInterceptor contextPropagatingInterceptor() {
