@@ -1,5 +1,6 @@
 package com.head4work.companyservice.config;
 
+import feign.RequestInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -39,5 +40,11 @@ public class SecurityConfig {
     @Bean
     public CustomHeaderAuthenticationFilter customHeaderAuthenticationFilter() {
         return new CustomHeaderAuthenticationFilter();
+    }
+
+
+    @Bean
+    public RequestInterceptor contextPropagatingInterceptor() {
+        return new FeignHeaderInterceptor();
     }
 }

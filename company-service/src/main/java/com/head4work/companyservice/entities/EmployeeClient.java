@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(name = "employee-service", configuration = FeignHeaderInterceptor.class)
+@FeignClient(name = "company-service", configuration = FeignHeaderInterceptor.class)
 public interface EmployeeClient {
     @GetMapping("/service/v1/employees/{id}")
     EmployeeResponse getEmployee(@PathVariable("id") String id);
