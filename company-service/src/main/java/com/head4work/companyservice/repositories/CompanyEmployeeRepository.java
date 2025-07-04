@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 
 public interface CompanyEmployeeRepository extends JpaRepository<CompanyEmployee, String> {
-    boolean existsByEmployeeIdAndCompanyId(String employeeId, String companyId);
+    boolean existsByEmployeeIdAndCompanyIdAndUserId(String employeeId, String companyId, String userId);
 
     @Modifying
-    void deleteByCompanyIdAndEmployeeId(String companyId, String employeeId);
+    void deleteByCompanyIdAndEmployeeIdAndUserId(String companyId, String employeeId, String userId);
 }

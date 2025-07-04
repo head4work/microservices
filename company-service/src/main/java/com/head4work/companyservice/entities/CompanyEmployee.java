@@ -23,6 +23,9 @@ public class CompanyEmployee extends AbstractBaseEntity {
     @Column(name = "company_id", nullable = false)
     private String companyId;
 
+    @Column(name = "user_id", nullable = false)
+    private String userId;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 

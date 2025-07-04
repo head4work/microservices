@@ -1,8 +1,6 @@
 package com.head4work.companyservice.controller;
 
 import com.head4work.companyservice.dtos.CompanyEmployeeRequest;
-import com.head4work.companyservice.dtos.EmployeeResponse;
-import com.head4work.companyservice.entities.Company;
 import com.head4work.companyservice.entities.CompanyEmployee;
 import com.head4work.companyservice.error.CustomResponseException;
 import com.head4work.companyservice.repositories.CompanyEmployeeRepository;
@@ -29,29 +27,27 @@ public class CompanyEmployeeController {
 
         String employeeId = request.getEmployeeId();
         String userId = getAuthenticatedUserId();
-        Company company = companyService.getByIdForUser(companyId, userId);
-        EmployeeResponse employee = companyService.getEmployee(employeeId);
-        if (!companyEmployeeRepository.existsByEmployeeIdAndCompanyId(employeeId, companyId)) {
+
+        if (!companyEmployeeRepository.existsByEmployeeIdAndCompanyIdAndUserId(employeeId, companyId, userId)) {
             CompanyEmployee companyEmployee = CompanyEmployee.builder()
                     .companyId(companyId)
                     .employeeId(employeeId)
+                    .userId(userId)
                     .build();
             companyEmployeeRepository.save(companyEmployee);
         } else {
-            throw new CustomResponseException("Employee already assigned to company %s".formatted(company.getName()), HttpStatus.CONFLICT);
+            throw new CustomResponseException("Employee already assigned to this company", HttpStatus.CONFLICT);
         }
         return ResponseEntity.ok().build();
 
     }
 
     @DeleteMapping("/{companyId}/employees/{employeeId}")
-    public ResponseEntity<Void> removeEmployee(@PathVariable String companyId,
+    public ResponseEntity<Void> removeEmployeeFromCompany(@PathVariable String companyId,
                                                @RequestBody CompanyEmployeeRequest request
     ) throws CustomResponseException {
         String userId = getAuthenticatedUserId();
-        Company company = companyService.getByIdForUser(companyId, userId);
-
-        companyEmployeeRepository.deleteByCompanyIdAndEmployeeId(companyId, request.getEmployeeId());
+        companyEmployeeRepository.deleteByCompanyIdAndEmployeeIdAndUserId(companyId, request.getEmployeeId(), userId);
         return ResponseEntity.ok().build();
     }
 }
