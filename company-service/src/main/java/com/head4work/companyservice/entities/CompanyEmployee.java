@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "company_employee")
+@Table(name = "company_employees")
 public class CompanyEmployee extends AbstractBaseEntity {
 
     @Column(name = "employee_id", nullable = false)

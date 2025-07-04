@@ -6,9 +6,7 @@ import com.head4work.companyservice.dtos.EmployeeResponse;
 import com.head4work.companyservice.entities.Company;
 import com.head4work.companyservice.entities.EmployeeClient;
 import com.head4work.companyservice.exceptions.CompanyNotFoundException;
-import com.head4work.companyservice.exceptions.EmptyCompanyException;
 import com.head4work.companyservice.repositories.CompanyRepository;
-import feign.FeignException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -26,20 +24,30 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final ModelMapper modelMapper;
 
+    @CircuitBreaker(name = "employeeService", fallbackMethod = "getEmployeeBackUp")
+    public EmployeeResponse getEmployee(String id) {
+        logger.info("getEmployee called");
+        return employeeClient.getEmployee(id);
+    }
 
+    // fallback for get employee
+    public EmployeeResponse getEmployeeBackUp(String id, Throwable t) {
+        return EmployeeResponse.builder()
+                .id("mock")
+                .firstName("mock")
+                .lastName("mock")
+                .build();
+    }
 
-    @CircuitBreaker(name = "employeeService", fallbackMethod = "getAllCompanyEmployeesBackUp")
-    public List<EmployeeResponse> getAllCompanyEmployees(String id) {
-        logger.info("getAllCompanyEmployees called");
-        return employeeClient.getAllCompanyEmployees(id);
+    @CircuitBreaker(name = "employeeService", fallbackMethod = "getEmployeesByIdsFallback")
+    public List<EmployeeResponse> getEmployeesByIds(List<String> ids) {
+        logger.info("getEmployeesByIds called");
+        return employeeClient.getEmployeesByIds(ids);
     }
 
     // Fallback method must match the original method's signature + Throwable
-    public List<EmployeeResponse> getAllCompanyEmployeesBackUp(String id, Throwable t) {
+    public List<EmployeeResponse> getEmployeesByIdsFallback(List<String> ids, Throwable t) {
         // Return mock data on failure
-        if (((FeignException.BadRequest) t).contentUTF8().contains("No employees assigned")) {
-            throw new EmptyCompanyException();
-        }
         return List.of(EmployeeResponse.builder()
                 .id("mock")
                 .firstName("mock")

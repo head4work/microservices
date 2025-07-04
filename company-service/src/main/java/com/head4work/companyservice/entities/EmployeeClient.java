@@ -6,6 +6,8 @@ import com.head4work.companyservice.dtos.EmployeeResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -14,6 +16,6 @@ public interface EmployeeClient {
     @GetMapping("/service/v1/employees/{id}")
     EmployeeResponse getEmployee(@PathVariable("id") String id);
 
-    @GetMapping("/service/v1/employees/company/{id}")
-    List<EmployeeResponse> getAllCompanyEmployees(@PathVariable("id") String id);
+    @PostMapping("/service/v1/employees/list")
+    List<EmployeeResponse> getEmployeesByIds(@RequestBody List<String> ids);
 }

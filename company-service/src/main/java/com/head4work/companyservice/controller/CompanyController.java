@@ -3,6 +3,7 @@ package com.head4work.companyservice.controller;
 import com.head4work.companyservice.dtos.CompanyDto;
 import com.head4work.companyservice.entities.Company;
 import com.head4work.companyservice.error.CustomResponseException;
+import com.head4work.companyservice.repositories.CompanyEmployeeRepository;
 import com.head4work.companyservice.services.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ import static com.head4work.companyservice.util.AuthenticatedUser.getAuthenticat
 @RequestMapping("/service/v1/company")
 public class CompanyController {
     private final CompanyService companyService;
+    private final CompanyEmployeeRepository companyEmployeeRepository;
     private static final Logger logger = LoggerFactory.getLogger(CompanyController.class);
 
     @PostMapping
@@ -72,6 +74,5 @@ public class CompanyController {
         List<Company> employees = companyService.getAllByUserId(userId);
         return ResponseEntity.ok(employees);
     }
-
 
 }
