@@ -4,11 +4,14 @@ import com.head4work.companyservice.dtos.CompanyEmployeeRequest;
 import com.head4work.companyservice.entities.CompanyEmployee;
 import com.head4work.companyservice.error.CustomResponseException;
 import com.head4work.companyservice.repositories.CompanyEmployeeRepository;
-import com.head4work.companyservice.services.CompanyService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.head4work.companyservice.util.AuthenticatedUser.getAuthenticatedUserId;
 
@@ -16,10 +19,9 @@ import static com.head4work.companyservice.util.AuthenticatedUser.getAuthenticat
 @RestController
 @RequestMapping("/service/v1/company")
 public class CompanyEmployeeController {
-    private final CompanyService companyService;
+    Logger logger = LoggerFactory.getLogger(CompanyEmployeeController.class);
     private final CompanyEmployeeRepository companyEmployeeRepository;
 
-    //TODO check user owns entities
     @PostMapping("/{companyId}/employee")
     public ResponseEntity<Void> assignEmployee(@PathVariable String companyId,
                                                @RequestBody CompanyEmployeeRequest request)
@@ -44,10 +46,18 @@ public class CompanyEmployeeController {
 
     @DeleteMapping("/{companyId}/employees/{employeeId}")
     public ResponseEntity<Void> removeEmployeeFromCompany(@PathVariable String companyId,
-                                               @RequestBody CompanyEmployeeRequest request
+                                                          @RequestBody CompanyEmployeeRequest request
     ) throws CustomResponseException {
         String userId = getAuthenticatedUserId();
         companyEmployeeRepository.deleteByCompanyIdAndEmployeeIdAndUserId(companyId, request.getEmployeeId(), userId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{companyId}/employee")
+    public ResponseEntity<List<CompanyEmployee>> getAllCompanyEmployees(@PathVariable String companyId) throws CustomResponseException {
+        String userId = getAuthenticatedUserId();
+        logger.info("Retrieving all employees for company: {}", companyId);
+        List<CompanyEmployee> employees = companyEmployeeRepository.getAllByCompanyIdAndUserId(companyId, userId);
+        return ResponseEntity.ok(employees);
     }
 }

@@ -23,7 +23,6 @@ import static com.head4work.employeeservice.util.AuthenticatedUser.getAuthentica
 @RestController
 @RequestMapping("/service/v1/employees")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class EmployeeController {
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
