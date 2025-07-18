@@ -28,6 +28,7 @@ public class Employee {
     private String lastName;
     private String address;
     private String phone;
+    private String email;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "rate_type")

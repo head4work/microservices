@@ -2,7 +2,7 @@ package com.head4work.companyservice.controller;
 
 import com.head4work.companyservice.dtos.CompanyEmployeeRequest;
 import com.head4work.companyservice.entities.CompanyEmployee;
-import com.head4work.companyservice.error.CustomResponseException;
+import com.head4work.companyservice.exceptions.CustomResponseException;
 import com.head4work.companyservice.repositories.CompanyEmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -44,12 +44,12 @@ public class CompanyEmployeeController {
 
     }
 
-    @DeleteMapping("/{companyId}/employees/{employeeId}")
+    @DeleteMapping("/{companyId}/employee")
     public ResponseEntity<Void> removeEmployeeFromCompany(@PathVariable String companyId,
-                                                          @RequestBody CompanyEmployeeRequest request
+                                                          @RequestParam String employeeId
     ) throws CustomResponseException {
         String userId = getAuthenticatedUserId();
-        companyEmployeeRepository.deleteByCompanyIdAndEmployeeIdAndUserId(companyId, request.getEmployeeId(), userId);
+        companyEmployeeRepository.deleteByCompanyIdAndEmployeeIdAndUserId(companyId, employeeId, userId);
         return ResponseEntity.ok().build();
     }
 

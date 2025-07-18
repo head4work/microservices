@@ -1,6 +1,5 @@
 package com.head4work.companyservice.exceptions;
 
-
 import com.head4work.companyservice.dtos.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

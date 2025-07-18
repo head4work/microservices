@@ -1,6 +1,6 @@
 package com.head4work.companyservice.util;
 
-import com.head4work.companyservice.error.CustomResponseException;
+import com.head4work.companyservice.exceptions.CustomResponseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
