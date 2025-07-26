@@ -39,14 +39,14 @@ public class CompanyService {
                 .build();
     }
 
-    @CircuitBreaker(name = "employeeService", fallbackMethod = "getEmployeesByIdsFallback")
-    public List<EmployeeResponse> getEmployeesByIds(List<String> ids) {
-        logger.info("getEmployeesByIds called");
-        return employeeClient.getEmployeesByIds(ids);
+    @CircuitBreaker(name = "employeeService", fallbackMethod = "getAllEmployees")
+    public List<EmployeeResponse> getAllEmployees() {
+        logger.info("getAllEmployees called");
+        return employeeClient.getAllEmployees();
     }
 
     // Fallback method must match the original method's signature + Throwable
-    public List<EmployeeResponse> getEmployeesByIdsFallback(List<String> ids, Throwable t) {
+    public List<EmployeeResponse> getAllEmployees(Throwable t) {
         // Return mock data on failure
         return List.of(EmployeeResponse.builder()
                 .id("mock")
