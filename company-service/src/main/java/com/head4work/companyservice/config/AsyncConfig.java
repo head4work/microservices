@@ -20,6 +20,8 @@ public class AsyncConfig {
         executor.setMaxPoolSize(10);        // Maximum number of threads the pool can grow to
         executor.setQueueCapacity(25);      // Capacity of the queue for tasks waiting to be executed
         executor.setThreadNamePrefix("AppAsync-"); // Prefix for the names of threads in this pool
+        // Apply the RequestContextTaskDecorator
+        executor.setTaskDecorator(new RequestContextTaskDecorator());
         executor.initialize();              // Initializes the thread pool
         return executor;
     }

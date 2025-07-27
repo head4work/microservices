@@ -77,10 +77,11 @@ public class CompanyEmployeeController {
 
         try {
             CompletableFuture<List<CompanyEmployee>> companyEmployeesFuture = CompletableFuture.supplyAsync(
-                    () -> companyEmployeeRepository.getAllByCompanyIdAndUserId(companyId, userId),
-                    applicationTaskExecutor // Specify the executor to use
+                    () -> companyEmployeeRepository.getAllByCompanyIdAndUserId(companyId, userId)
+                    // applicationTaskExecutor // Specify the executor to use
             );
             CompletableFuture<List<EmployeeResponse>> employeesFuture = CompletableFuture.supplyAsync(
+
                     companyService::getAllEmployees, // Using a method reference for conciseness
                     applicationTaskExecutor // Specify the executor to use
             );

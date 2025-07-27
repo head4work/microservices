@@ -1,6 +1,5 @@
 package com.head4work.companyservice.config;
 
-import feign.RequestInterceptor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,8 +49,4 @@ public class SecurityConfig {
         return modelMapper;
     }
 
-    @Bean
-    public RequestInterceptor contextPropagatingInterceptor() {
-        return new FeignHeaderInterceptor();
-    }
 }
