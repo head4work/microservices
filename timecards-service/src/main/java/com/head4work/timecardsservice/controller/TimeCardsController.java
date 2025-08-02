@@ -2,6 +2,7 @@ package com.head4work.timecardsservice.controller;
 
 
 import com.head4work.timecardsservice.dto.TimeCardDto;
+import com.head4work.timecardsservice.dto.TimeCardUpdateDto;
 import com.head4work.timecardsservice.entities.TimeCard;
 import com.head4work.timecardsservice.exceptions.CustomResponseException;
 import com.head4work.timecardsservice.service.TimeCardService;
@@ -45,9 +46,9 @@ public class TimeCardsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TimeCard> updateTimecard(@PathVariable String id, @RequestBody TimeCardDto timeCardDto) throws CustomResponseException {
+    public ResponseEntity<TimeCard> updateTimecard(@PathVariable String id, @RequestBody TimeCardUpdateDto uodatedCard) throws CustomResponseException {
         String userId = getAuthenticatedUserId();
-        TimeCard updateTimeCard = timeCardService.updateTimeCardForUser(timeCardDto, id, userId);
+        TimeCard updateTimeCard = timeCardService.updateTimeCardForUser(uodatedCard, id, userId);
         logger.info("Updating timecard with id: {}", id);
         return ResponseEntity.ok(updateTimeCard);
     }
@@ -68,10 +69,20 @@ public class TimeCardsController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TimeCard>> getAllTimeCards() throws CustomResponseException {
+    public ResponseEntity<List<TimeCardDto>> getAllTimeCards() throws CustomResponseException {
         String userId = getAuthenticatedUserId();
         logger.info("Retrieving all timecards for user: {}", userId);
         List<TimeCard> timeCards = timeCardService.getAllByUserId(userId);
-        return ResponseEntity.ok(timeCards);
+        return ResponseEntity.ok(timeCardService.timeCardsToDtos(timeCards));
     }
+
+    @GetMapping("/{employeeId}/timecards_for_employee")
+    public ResponseEntity<List<TimeCardDto>> getAllTimeCardsForEmployee(@PathVariable String employeeId) throws CustomResponseException {
+        String userId = getAuthenticatedUserId();
+        logger.info("Retrieving all timecards for employee: {}", userId);
+        List<TimeCard> timeCards = timeCardService.getAllByUserAndEmployee(userId, employeeId);
+        List<TimeCardDto> timeCardDtos = timeCardService.timeCardsToDtos(timeCards);
+        return ResponseEntity.ok(timeCardDtos);
+    }
+
 }

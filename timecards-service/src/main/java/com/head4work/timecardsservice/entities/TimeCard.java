@@ -27,8 +27,10 @@ public class TimeCard extends AbstractBaseEntity {
 
     @Embeddable
     @Data
-    private static class TimeSpan {
+    public static class TimeSpan {
+        @Column(name = "start_time")
         LocalDateTime start;
+        @Column(name = "end_time")
         LocalDateTime end;
     }
 }

@@ -1,6 +1,7 @@
 package com.head4work.companyservice.controller;
 
 import com.head4work.companyservice.dtos.CompanyEmployeeRequest;
+import com.head4work.companyservice.dtos.CompanyEmployeeWithNameDto;
 import com.head4work.companyservice.dtos.CompanyEmployeesDto;
 import com.head4work.companyservice.dtos.EmployeeResponse;
 import com.head4work.companyservice.entities.CompanyEmployee;
@@ -14,7 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
@@ -69,12 +73,37 @@ public class CompanyEmployeeController {
         return ResponseEntity.ok(employees);
     }
 
+    @GetMapping("/{companyId}/employees_with_names")
+    public ResponseEntity<List<CompanyEmployeeWithNameDto>> getAllCompanyEmployeesWithNames(@PathVariable String companyId) throws CustomResponseException {
+        String userId = getAuthenticatedUserId();
+        logger.info("Retrieving all employees with names for company: {}", companyId);
+        CompanyEmployeesDto companyEmployeesDto = asyncGetAllCompanyEmployees(companyId, userId);
+        List<CompanyEmployee> companyEmployees = companyEmployeesDto.getCompanyEmployees();
+        List<EmployeeResponse> employees = companyEmployeesDto.getEmployees();
+        Map<String, String> map = new HashMap<>();
+        for (EmployeeResponse e : employees) {
+            map.put(e.getId(), e.getFirstName() + " " + e.getLastName());
+        }
+
+        List<CompanyEmployeeWithNameDto> result = new ArrayList<>();
+        for (CompanyEmployee companyEmployee : companyEmployees) {
+            result.add(CompanyEmployeeWithNameDto.builder()
+                    .id(companyEmployee.getId())
+                    .name(map.get(companyEmployee.getEmployeeId()))
+                    .build());
+        }
+        return ResponseEntity.ok(result);
+    }
+
+
     @GetMapping("/{companyId}/company_employees")
     public ResponseEntity<CompanyEmployeesDto> getAllCompanyEmployeesAndEmployees(@PathVariable String companyId) throws CustomResponseException {
         String userId = getAuthenticatedUserId();
-//        List<CompanyEmployee> companyEmployees = companyEmployeeRepository.getAllByCompanyIdAndUserId(companyId, userId);
-//        List<EmployeeResponse> employees = companyService.getAllEmployees();
+        CompanyEmployeesDto result = asyncGetAllCompanyEmployees(companyId, userId);
+        return ResponseEntity.ok(result);
+    }
 
+    private CompanyEmployeesDto asyncGetAllCompanyEmployees(String companyId, String userId) {
         try {
             CompletableFuture<List<CompanyEmployee>> companyEmployeesFuture = CompletableFuture.supplyAsync(
                     () -> companyEmployeeRepository.getAllByCompanyIdAndUserId(companyId, userId)
@@ -89,11 +118,11 @@ public class CompanyEmployeeController {
             List<CompanyEmployee> companyEmployees = companyEmployeesFuture.get();
             List<EmployeeResponse> employees = employeesFuture.get();
 
-            CompanyEmployeesDto companyEmployeesDto = CompanyEmployeesDto.builder()
+            return CompanyEmployeesDto.builder()
                     .employees(employees)
                     .companyEmployees(companyEmployees)
                     .build();
-            return ResponseEntity.ok(companyEmployeesDto);
+
         } catch (CompletionException e) {
             // Handle exceptions that occurred within the CompletableFuture tasks.
             // CompletionException wraps the original exception (e.g., from network call, DB error).
