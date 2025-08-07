@@ -3,8 +3,10 @@ package com.head4work.companyservice.services;
 
 import com.head4work.companyservice.dtos.CompanyDto;
 import com.head4work.companyservice.dtos.EmployeeResponse;
+import com.head4work.companyservice.dtos.TimeCardDto;
 import com.head4work.companyservice.entities.Company;
 import com.head4work.companyservice.entities.EmployeeClient;
+import com.head4work.companyservice.entities.TimeCardsClient;
 import com.head4work.companyservice.exceptions.CompanyNotFoundException;
 import com.head4work.companyservice.repositories.CompanyRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -14,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -23,6 +26,7 @@ public class CompanyService {
     private final EmployeeClient employeeClient;
     private final CompanyRepository companyRepository;
     private final ModelMapper modelMapper;
+    private final TimeCardsClient timeCardsClient;
 
     @CircuitBreaker(name = "employeeService", fallbackMethod = "getEmployeeBackUp")
     public EmployeeResponse getEmployee(String id) {
@@ -39,14 +43,14 @@ public class CompanyService {
                 .build();
     }
 
-    @CircuitBreaker(name = "employeeService", fallbackMethod = "getAllEmployees")
+    @CircuitBreaker(name = "employeeService", fallbackMethod = "getAllEmployeesBackUp")
     public List<EmployeeResponse> getAllEmployees() {
         logger.info("getAllEmployees called");
         return employeeClient.getAllEmployees();
     }
 
     // Fallback method must match the original method's signature + Throwable
-    public List<EmployeeResponse> getAllEmployees(Throwable t) {
+    public List<EmployeeResponse> getAllEmployeesBackUp(Throwable t) {
         // Return mock data on failure
         return List.of(EmployeeResponse.builder()
                 .id("mock")
@@ -55,6 +59,15 @@ public class CompanyService {
                 .build());
     }
 
+    @CircuitBreaker(name = "timeCardsService", fallbackMethod = "getAllTimeCardsForEmployeesListBackUp")
+    public List<TimeCardDto> getAllTimeCardsForEmployeesList(List<String> employeeIds) {
+        logger.info("getAllTimeCards called");
+        return timeCardsClient.getAllTimeCardsForEmployeesList(employeeIds);
+    }
+
+    public List<TimeCardDto> getAllTimeCardsForEmployeesListBackUp(Throwable t) {
+        return Collections.emptyList();
+    }
     public Company create(Company company) {
         return companyRepository.save(company);
     }

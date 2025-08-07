@@ -1,4 +1,4 @@
-package com.head4work.timecardsservice.dto;
+package com.head4work.companyservice.dtos;
 
 import lombok.Builder;
 import lombok.Data;

@@ -46,7 +46,9 @@ public class SecurityConfig {
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        modelMapper.getConfiguration()
+                .setSkipNullEnabled(true)
+                .setCollectionsMergeEnabled(false); // replace instead of merge
         return modelMapper;
     }
 

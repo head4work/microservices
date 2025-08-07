@@ -34,7 +34,7 @@ public class TimeCardService {
     }
 
     public void deleteForUser(String id, String userId) {
-
+        timeCardRepository.deleteTimeCardByIdAndUserId(id, userId);
     }
 
     public TimeCard getByIdForUser(String id, String userId) {
@@ -67,6 +67,7 @@ public class TimeCardService {
             timeCardDtos.add(
                     TimeCardDto.builder()
                             .id(timeCard.getId())
+                            .companyEmployeeId(timeCard.getCompanyEmployeeId())
                             .date(timeCard.getDate())
                             .hours(hours)
                             .overtime(overtime)

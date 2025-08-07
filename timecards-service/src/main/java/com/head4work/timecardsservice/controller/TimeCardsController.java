@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static com.head4work.timecardsservice.util.AuthenticatedUser.getAuthenticatedUserId;
 
@@ -74,6 +77,17 @@ public class TimeCardsController {
         logger.info("Retrieving all timecards for user: {}", userId);
         List<TimeCard> timeCards = timeCardService.getAllByUserId(userId);
         return ResponseEntity.ok(timeCardService.timeCardsToDtos(timeCards));
+    }
+
+    @PostMapping("/timecards_for_employees_list")
+    public ResponseEntity<List<TimeCardDto>> getAllTimeCardsForEmployeesList(@RequestBody List<String> employeesIds) throws CustomResponseException {
+        String userId = getAuthenticatedUserId();
+        logger.info("Retrieving all timecards for employees list: {}", employeesIds);
+        List<TimeCard> result = employeesIds.stream()
+                .map(employeeId -> timeCardService.getAllByUserAndEmployee(userId, employeeId))
+                .flatMap((Function<List<TimeCard>, Stream<TimeCard>>) Collection::stream)
+                .toList();
+        return ResponseEntity.ok(timeCardService.timeCardsToDtos(result));
     }
 
     @GetMapping("/{employeeId}/timecards_for_employee")
