@@ -27,29 +27,28 @@ public class TimeCardService {
         return timeCardRepository.save(timeCard);
     }
 
-    public TimeCard updateTimeCardForUser(TimeCardUpdateDto updatedCard, String id, String userId) {
-        TimeCard timeCard = getByIdForUser(id, userId);
+    public TimeCard updateById(TimeCardUpdateDto updatedCard, String id) {
+        TimeCard timeCard = getById(id);
         modelMapper.map(updatedCard, timeCard);
         return timeCardRepository.save(timeCard);
     }
 
-    public void deleteForUser(String id, String userId) {
-        timeCardRepository.deleteTimeCardByIdAndUserId(id, userId);
+    public void deleteById(String id) {
+        timeCardRepository.deleteById(id);
     }
 
-    public TimeCard getByIdForUser(String id, String userId) {
-        return timeCardRepository.findByIdAndUserId(id, userId)
+    public TimeCard getById(String id) {
+        return timeCardRepository.findById(id)
                 .orElseThrow(() -> new CustomResponseException("No timecard found", HttpStatus.BAD_REQUEST));
     }
 
-    public List<TimeCard> getAllByUserId(String userId) {
-        return timeCardRepository.findAllByUserId(userId).orElseThrow(
-                () -> new CustomResponseException("No timecard found", HttpStatus.BAD_REQUEST));
+    public List<TimeCard> getAllTimeCards() {
+        return timeCardRepository.findAll();
     }
 
-    public List<TimeCard> getAllByUserAndEmployee(String userId, String employeeId) {
+    public List<TimeCard> getAllByCompanyEmployee(String employeeId) {
         logger.info("get all timecards for employee id {}", employeeId);
-        return timeCardRepository.findAllByUserIdAndCompanyEmployeeId(userId, employeeId)
+        return timeCardRepository.findAllByCompanyEmployeeId(employeeId)
                 .orElseThrow(() ->
                         new CustomResponseException("There are no time cards for this employee", HttpStatus.BAD_REQUEST));
     }

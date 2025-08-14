@@ -23,7 +23,7 @@ import java.util.List;
 public class JwtFilter implements GlobalFilter, Ordered {
     // Define paths to skip (can use regex or path matcher if needed)
     private static final List<String> EXCLUDED_PATHS = List.of(
-            "/service/v1/auth", "/auth/login", "/auth/register", "/auth/refresh"
+            "/public", "/service/v1/auth", "/auth/login", "/auth/register", "/auth/refresh"
     );
     private final JwtService jwtUtil;
 

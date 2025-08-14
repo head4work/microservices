@@ -18,7 +18,6 @@ import java.util.List;
 @Table(name = "time_cards")
 public class TimeCard extends AbstractBaseEntity {
     LocalDate date;
-    String userId;
     String companyEmployeeId;
 
     @ElementCollection
@@ -27,7 +26,11 @@ public class TimeCard extends AbstractBaseEntity {
 
     @Embeddable
     @Data
+    @NoArgsConstructor
     public static class TimeSpan {
+        public TimeSpan(LocalDateTime start) {
+            this.start = start;
+        }
         @Column(name = "start_time")
         LocalDateTime start;
         @Column(name = "end_time")
