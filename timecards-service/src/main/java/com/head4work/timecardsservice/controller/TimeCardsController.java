@@ -113,4 +113,10 @@ public class TimeCardsController {
             throw new CustomResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/device/{companyId}")
+    public ResponseEntity<TimePunchDevice> getTimeDeviceById(@PathVariable String companyId) throws CustomResponseException {
+        TimePunchDevice device = timePunchDeviceRepository.findByCompanyId(companyId);
+        return ResponseEntity.ok(device);
+    }
 }
